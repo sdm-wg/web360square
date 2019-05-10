@@ -1,0 +1,40 @@
+{
+  "name": "web360square",
+  "version": "0.0.0",
+  "description": "",
+  "main": "assets/app.js",
+  "scripts": {
+    "clean": "rm -rf assets/app.* assets/vendor.*",
+    "lint": "eslint src",
+    "build": "npm run clean && webpack --progress --mode production",
+    "build:watch": "npm run clean && webpack --progress --watch --mode development",
+    "dev": "webpack-dev-server --inline"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sdm-wg/web360square.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sdm-wg/web360square/issues"
+  },
+  "homepage": "https://sdm-wg.github.io/web360square/",
+  "dependencies": {
+    "aframe": "^0.9.2",
+    "hls.js": "^0.12.4"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "babel-eslint": "^10.0.1",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "eslint": "^5.16.0",
+    "eslint-cli": "^1.1.1",
+    "webpack": "^4.30.0",
+    "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.3.1"
+  }
+}
