@@ -35,22 +35,22 @@
           geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat">
         </a-entity>
         -->
-        <a-entity cursor position="0 0 -1"
+        <a-entity position="0 0 -1" cursor="rayOrigin: mouse" raycaster="objects: .clickable"
           geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat">
         </a-entity>
       </a-entity>
       <!-- video -->
       <a-videosphere src="#video" rotation="0 270 0"></a-videosphere>
       <!-- switch -->
-      <a-entity id="sphere-switch" cursor-listener-switch geometry="primitive: sphere" position="0 -0.5 -3"
+      <a-entity id="sphere-switch" class="clickable" cursor-listener-switch geometry="primitive: sphere" position="0 -0.5 -3"
         scale="0.25 0.25 0.25" material="color: gray"></a-entity>
       <a-text position="0.3 -0.5 -3" color="white" value="<- click to play"></a-text>
       <!-- music sources -->
-      <a-entity id="sphere0" cursor-listener0 geometry="primitive: sphere" position="3 0.5 -5" scale="0.25 0.25 0.25" material="color: green; transparent: true; opacity: 0.9">
+      <a-entity id="sphere0" class="clickable" cursor-listener0 geometry="primitive: sphere" position="3 0.5 -5" scale="0.25 0.25 0.25" material="color: green; transparent: true; opacity: 0.9">
       </a-entity>
-      <a-entity id="sphere1" cursor-listener1 geometry="primitive: sphere" position="-3 1 -5" scale="0.25 0.25 0.25" material="color: red; transparent: true; opacity: 0.9">
+      <a-entity id="sphere1" class="clickable" cursor-listener1 geometry="primitive: sphere" position="-3 1 -5" scale="0.25 0.25 0.25" material="color: red; transparent: true; opacity: 0.9">
       </a-entity>
-      <a-entity id="sphere2" cursor-listener2 geometry="primitive: sphere" position="-0.5 0.7 -5" scale="0.25 0.25 0.25" material="color: blue; transparent: true; opacity: 0.9">
+      <a-entity id="sphere2" class="clickable" cursor-listener2 geometry="primitive: sphere" position="-0.5 0.7 -5" scale="0.25 0.25 0.25" material="color: blue; transparent: true; opacity: 0.9">
       </a-entity>
       <!--<a-sphere id="sphere" position="0 0 -10" radius="1" color="#FFFFFF"></a-sphere>-->
     </a-scene>
