@@ -1,5 +1,4 @@
 import AFRAME from 'aframe';
-import { MouseEventWrapper } from './MouseEventWrapper';
 import { BufferLoader } from './BufferLoader';
 import { setupHls, playVideo } from './video';
 
@@ -31,7 +30,8 @@ let isLoading = true;
 // 音楽を再生するためのスイッチ(色: cyan)を押したときの処理
 AFRAME.registerComponent('cursor-listener-switch', {
   init: function() {
-    this.el.addEventListener(MouseEventWrapper.START, function() {
+    // 'touchstart' では, iOS でイベントが発生しない
+    this.el.addEventListener('mousedown', function() {
       if (isLoading || isPlaying) {
         return;
       }
@@ -54,7 +54,8 @@ AFRAME.registerComponent('cursor-listener-switch', {
 // 楽器の Keyboard の ON/OFF
 AFRAME.registerComponent('cursor-listener0', {
   init: function() {
-    this.el.addEventListener(MouseEventWrapper.START, function() {
+    // 'touchstart' では, iOS でイベントが発生しない
+    this.el.addEventListener('mousedown', function() {
       if (!isPlaying) {
         return;
       }
@@ -75,7 +76,8 @@ AFRAME.registerComponent('cursor-listener0', {
 // Bass の ON/OFF
 AFRAME.registerComponent('cursor-listener1', {
   init: function() {
-    this.el.addEventListener(MouseEventWrapper.START, function() {
+    // 'touchstart' では, iOS でイベントが発生しない
+    this.el.addEventListener('mousedown', function() {
       if (!isPlaying) {
         return;
       }
@@ -96,7 +98,8 @@ AFRAME.registerComponent('cursor-listener1', {
 // Drum の ON/OFF
 AFRAME.registerComponent('cursor-listener2', {
   init: function() {
-    this.el.addEventListener(MouseEventWrapper.START, function() {
+    // 'touchstart' では, iOS でイベントが発生しない
+    this.el.addEventListener('mousedown', function() {
       if (!isPlaying) {
         return;
       }
