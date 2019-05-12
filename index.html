@@ -26,7 +26,7 @@
     <a-scene id="ascn">
       <a-assets>
         <!-- Chromeではmutedオプションをつけないとクライアントが何らかの操作を加えない限り動画が再生されない -->
-        <video id="video" loop muted crossorigin="anonymous" />
+        <video id="video" loop muted />
       </a-assets>
       <a-entity id="camera" camera rotation-reader look-controls wasd-controls="acceleration: 200;"
         position="0 1.6 0">
