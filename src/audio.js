@@ -6,11 +6,9 @@ import { setupHls, playVideo } from './video';
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
 const audiocontext = new AudioContext();
-
-const compressor = audiocontext.createDynamicsCompressor();
-
-const listener = audiocontext.listener;
-// listener.setPosition(0, 0, 0);
+const mastergain   = audiocontext.createGain();
+const compressor   = audiocontext.createDynamicsCompressor();
+const listener     = audiocontext.listener;
 
 const MAX_VOLUME = 0.5;
 const AUDIO_FILES = [
@@ -177,7 +175,8 @@ function load() {
 
       sources[i].connect(gains[i]);
       gains[i].connect(panners[i]);
-      panners[i].connect(compressor);
+      panners[i].connect(mastergain);
+      mastergain.connect(compressor);
       compressor.connect(audiocontext.destination);
 
       sources[i].loop = true;
