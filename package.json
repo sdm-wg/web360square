@@ -8,7 +8,7 @@
     "lint": "eslint src",
     "build": "npm run clean && webpack --progress --mode production",
     "build:watch": "npm run clean && webpack --progress --watch --mode development",
-    "dev": "webpack-dev-server --inline"
+    "dev": "webpack-dev-server --inline  --content-base . --watch-content-base"
   },
   "repository": {
     "type": "git",
