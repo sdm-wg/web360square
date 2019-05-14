@@ -4,7 +4,8 @@ module.exports = {
   },
   output: {
     filename: '[name].js',
-    path: `${__dirname}/assets`
+    path: `${__dirname}/assets`,
+    publicPath: '/assets/'
   },
   module: {
     rules: [
