@@ -3,7 +3,8 @@ import Hls from 'hls.js';
 const playlistfile = './assets/video/video.m3u8';
 // const playlistfile = 'http://shin.hongo.wide.ad.jp:50080/video/billboard1_er/video.m3u8';
 
-alert();
+alert('1');
+alert('2');
 
 let timerId = null;
 
