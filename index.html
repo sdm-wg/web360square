@@ -25,8 +25,7 @@
     </a-scene>
     <a-scene id="ascn">
       <a-assets>
-        <!-- Chromeではmutedオプションをつけないとクライアントが何らかの操作を加えない限り動画が再生されない -->
-        <video id="video" loop muted />
+        <video id="video" loop>
       </a-assets>
       <a-entity id="camera" camera rotation-reader look-controls wasd-controls="acceleration: 200;"
         position="0 1.6 0">
@@ -46,13 +45,9 @@
         scale="0.25 0.25 0.25" material="color: gray"></a-entity>
       <a-text position="0.3 -0.5 -3" color="white" value="<- click to play"></a-text>
       <!-- music sources -->
-      <a-entity id="sphere0" class="clickable" cursor-listener0 geometry="primitive: sphere" position="3 0.5 -5" scale="0.25 0.25 0.25" material="color: green; transparent: true; opacity: 0.9">
-      </a-entity>
-      <a-entity id="sphere1" class="clickable" cursor-listener1 geometry="primitive: sphere" position="-3 1 -5" scale="0.25 0.25 0.25" material="color: red; transparent: true; opacity: 0.9">
-      </a-entity>
-      <a-entity id="sphere2" class="clickable" cursor-listener2 geometry="primitive: sphere" position="-0.5 0.7 -5" scale="0.25 0.25 0.25" material="color: blue; transparent: true; opacity: 0.9">
-      </a-entity>
-      <!--<a-sphere id="sphere" position="0 0 -10" radius="1" color="#FFFFFF"></a-sphere>-->
+      <a-entity id="sphere0" class="clickable" cursor-listener0></a-entity>
+      <a-entity id="sphere1" class="clickable" cursor-listener1></a-entity>
+      <a-entity id="sphere2" class="clickable" cursor-listener2></a-entity>
     </a-scene>
   </body>
 </html>

@@ -17,15 +17,24 @@ const AUDIO_FILES = [
 ];
 
 // 音関連の変数
-const sources = [];
-const gains   = [];
-const panners = [];
+const sources   = [];
+const analysers = [];
+const gains     = [];
+const panners   = [];
 
 // ファイルのON/OFF管理変数は全部offにしておく
 const audioStates = [false, false, false];
 
 let isPlaying = false;
 let isLoading = true;
+
+// 各楽器のスイッチの変数
+const positions = [
+  {x:    3, y: 0.5, z: -5},
+  {x:   -3, y:   1, z: -5},
+  {x: -0.5, y: 0.7, z: -5}
+];
+const scale = 0.25;
 
 // 音楽を再生するためのスイッチ(色: cyan)を押したときの処理
 AFRAME.registerComponent('cursor-listener-switch', {
@@ -36,13 +45,11 @@ AFRAME.registerComponent('cursor-listener-switch', {
         return;
       }
 
-      // HACK: videoが遅れるので0.4秒から再生してみる
-      video.currentTime = 0.4;
-
       playVideo();
 
       for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
-        sources[i].start(0);
+          gains[i].gain.value = MAX_VOLUME;
+          sources[i].start(0);
       }
 
       this.setAttribute('material', 'color', 'gray');
@@ -52,70 +59,80 @@ AFRAME.registerComponent('cursor-listener-switch', {
 });
 
 // 楽器の Keyboard の ON/OFF
-AFRAME.registerComponent('cursor-listener0', {
-  init: function() {
-    // 'touchstart' では, iOS でイベントが発生しない
-    this.el.addEventListener('mousedown', function() {
-      if (!isPlaying) {
-        return;
-      }
+for (let i = 0; i < AUDIO_FILES.length; i++) {
+  AFRAME.registerComponent(`cursor-listener${i}`, {
+    init: function() {
+      this.el.setAttribute('geometry', 'primitive', 'sphere');
+      this.el.setAttribute('position', positions[i]);
+      this.el.setAttribute('scale', {x: scale, y: scale, z: scale});
+      this.el.setAttribute('material', 'color', 'gray');
+      this.el.setAttribute('material', 'transparent', true);
+      this.el.setAttribute('material', 'opacity', 0.9);
 
-      if (audioStates[0]) {
-        this.setAttribute('material', 'color', 'green');
-        gains[0].gain.value = MAX_VOLUME;
-        audioStates[0] = false;
-      } else {
-        this.setAttribute('material', 'color', 'gray');
-        gains[0].gain.value = 0;
-        audioStates[0] = true;
-      }
-    });
-  }
-});
+      // 'touchstart' では, iOS でイベントが発生しない
+      this.el.addEventListener('mousedown', function() {
+        if (!isPlaying) {
+          return;
+        }
 
-// Bass の ON/OFF
-AFRAME.registerComponent('cursor-listener1', {
-  init: function() {
-    // 'touchstart' では, iOS でイベントが発生しない
-    this.el.addEventListener('mousedown', function() {
-      if (!isPlaying) {
-        return;
+        if (audioStates[i]) {
+          //this.setAttribute('material', 'color', 'rgb(0, 255, 0)');
+          gains[i].gain.value = MAX_VOLUME;
+          audioStates[i] = false;
+        } else {
+          //this.setAttribute('material', 'color', 'gray');
+          gains[i].gain.value = 0;
+          audioStates[i] = true;
+        }
+      });
+    },
+    tick: function() {
+      if (analysers[i]) {
+        // 音源の時間データを取得
+        // 0-255の範囲の配列で基準値は128?
+        const data = new Uint8Array(analysers[i].frequencyBinCount);
+        analysers[i].getByteTimeDomainData(data);
+        // rate: "データの平均値と128の差"を-1から1で表した値
+        let rate = 0.0;
+        for (let j = 0; j < data.length; j++) { rate += data[j]; }
+        rate = rate/data.length/128 - 1;
+        // rateが0に近いことが多いので0付近が大きくなるように適当にスケーリング
+        rate = Math.abs(rate) < 0.1 ? rate*7 : Math.sign(rate)*(Math.abs(rate)*0.33+0.67);
+        // ON: 音源に依存して変動 / OFF: 0.25固定
+        const _scale = (gains[i].gain.value === 0) ? {x: scale, y: scale, z: scale} : listenerScale(rate);
+        const _color = (gains[i].gain.value === 0) ? 'gray' : listenerColor(rate);
+        this.el.setAttribute('scale', _scale);
+        this.el.setAttribute('material', 'color', _color);
       }
+    }
+  });
+}
 
-      if (audioStates[1]) {
-        this.setAttribute('material', 'color', 'red');
-        gains[1].gain.value = MAX_VOLUME;
-        audioStates[1] = false;
-      } else {
-        this.setAttribute('material', 'color', 'gray');
-        gains[1].gain.value = 0;
-        audioStates[1] = true;
-      }
-    });
-  }
-});
+// 各楽器のスイッチの大きさを音源信号の強さに依存して変更
+const listenerScale = (rate) => {
+  const s = scale*(1+rate);
+  return {x: s, y: s, z: s};
+};
 
-// Drum の ON/OFF
-AFRAME.registerComponent('cursor-listener2', {
-  init: function() {
-    // 'touchstart' では, iOS でイベントが発生しない
-    this.el.addEventListener('mousedown', function() {
-      if (!isPlaying) {
-        return;
-      }
+// 各楽器のスイッチの色を音源信号の強さに依存して変更
+const listenerColor = (rate) => {
+  // [rate:小] blue < green < yellow < orange < red [rate:大]
+  const color = [0, 0, 0];
+  // r成分
+  if (rate < 0)                     { color[0] = 0; }
+  else if (rate >= 0 && rate < 0.5) { color[0] = Math.floor(rate*2*255); }
+  else                              { color[0] = 255; }
+  // g成分
+  if (rate < -0.5)                { color[1] = Math.floor((rate+1.0)*2*255); }
+  if (rate >= -0.5 && rate < 0.5) { color[1] = 255; }
+  else                            { color[1] = 255-Math.floor((rate-0.5)*2*255); }
+  // b成分
+  if (rate < -0.5)              { color[2] = 255; }
+  if (rate >= -0.5 && rate < 0) { color[2] = 255-Math.floor((rate+0.5)*2*255); }
+  else                          { color[2] = 0; }
 
-      if (audioStates[2]) {
-        this.setAttribute('material', 'color', 'blue');
-        gains[2].gain.value = MAX_VOLUME;
-        audioStates[2] = false;
-      } else {
-        this.setAttribute('material', 'color', 'gray');
-        gains[2].gain.value = 0;
-        audioStates[2] = true;
-      }
-    });
-  }
-});
+  return `rgb(${color[0]}, ${color[1]}, ${color[2]})`;
+};
 
 // camear(listener)の位置と向きを定常的に取得して反映
 AFRAME.registerComponent('rotation-reader', {
@@ -159,8 +176,10 @@ function load() {
       sources[i] = audiocontext.createBufferSource();
       sources[i].buffer = bufferList[i];
 
+      analysers[i] = audiocontext.createAnalyser();
+
       gains[i] = audiocontext.createGain();
-      gains[i].gain.value = MAX_VOLUME;
+      gains[i].gain.value = 0;
 
       panners[i] = audiocontext.createPanner();
       panners[i].panningModel  = 'equalpower';
@@ -176,7 +195,8 @@ function load() {
 
       panners[i].setPosition(x, y, z);
 
-      sources[i].connect(gains[i]);
+      sources[i].connect(analysers[i]);
+      analysers[i].connect(gains[i]);
       gains[i].connect(panners[i]);
       panners[i].connect(mastergain);
       mastergain.connect(compressor);
