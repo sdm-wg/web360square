@@ -22,9 +22,5 @@ module.exports = {
       name: 'vendor'
     }
   },
-  devtool: 'source-map',
-  devServer: {
-    host: '0.0.0.0',
-    disableHostCheck: true
-  }
+  devtool: 'source-map'
 };

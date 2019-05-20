@@ -7,9 +7,7 @@ let timerId = null;
 
 export const setupHls = () => {
   if (Hls.isSupported()) {
-    const hls = new Hls({
-      startPosition: 0.4
-    });
+    const hls = new Hls();
 
     hls.loadSource(playlistfile);
     hls.attachMedia(video);
