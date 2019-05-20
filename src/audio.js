@@ -45,9 +45,6 @@ AFRAME.registerComponent('cursor-listener-switch', {
         return;
       }
 
-      // HACK: videoが遅れるので0.4秒から再生してみる
-      video.currentTime = 0.4;
-
       playVideo();
 
       for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
