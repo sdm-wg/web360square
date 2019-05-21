@@ -112,8 +112,9 @@ for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
       rate = Math.abs(rate) < 0.01 ? rate * 40 : Math.sign(rate) * (Math.abs(rate) * 0.06 + 0.94);
 
       // ON: 音源に依存して変動 / OFF: 0.25固定
-      const scl = (gains[i].gain.value === 0) ? {x: scale, y: scale, z: scale} : listenerScale(rate);
+      const scl = (gains[i].gain.value === 0) ? { x: scale, y: scale, z: scale } : listenerScale(rate);
       const clr = (gains[i].gain.value === 0) ? 'gray' : listenerColor(rate);
+
       this.el.setAttribute('scale', scl);
       this.el.setAttribute('material', 'color', clr);
     }
