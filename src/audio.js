@@ -90,7 +90,7 @@ for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
       if (!analysers[i]) {
         return;
       }
- 
+
       // 音源の時間データを取得
       // 0-255の範囲の配列で基準値は128?
       const dataLength = analysers[i].frequencyBinCount;
@@ -99,7 +99,7 @@ for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
 
       // rate: "データの平均値と128の差"を-1から1で表した値
       let rate = 0;
-      
+
       for (let j = 0; j < dataLength; j++) {
         rate += data[j];
       }
@@ -130,7 +130,7 @@ const listenerScale = (rate) => {
 // [rate:小] blue < green < yellow < orange < red [rate:大]
 const listenerColor = (rate) => {
   const clr = [0, 0, 0];
-  
+
   // r成分
   if (rate < 0) {
     clr[0] = 0;
@@ -139,7 +139,7 @@ const listenerColor = (rate) => {
   } else {
     clr[0] = 255;
   }
-  
+
   // g成分
   if (rate < -0.5) {
     clr[1] = Math.floor((rate + 1.0) * 2 * 255);
