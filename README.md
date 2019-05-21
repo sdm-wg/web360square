@@ -10,7 +10,7 @@
 
 ```bash
 $ git clone git@github.com:sdm-wg/web360square.git
-$ cd aframe-sample
+$ cd web360square
 $ npm install
 ```
 
