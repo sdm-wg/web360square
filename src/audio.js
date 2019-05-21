@@ -92,24 +92,34 @@ for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
       }
 
       // 音源の時間データを取得
-      // 0-255の範囲の配列で基準値は128?
-      const dataLength = analysers[i].frequencyBinCount;
-      const data = new Uint8Array(dataLength);
+      const data = new Uint8Array(analysers[i].fftSize);
+
+      // `Uint8Array` と振幅値の対応
+      // 0   -> -1
+      // 128 ->  0
+      // 255 ->  1
       analysers[i].getByteTimeDomainData(data);
 
-      // rate: "データの平均値と128の差"を-1から1で表した値
-      let rate = 0;
+      let sum = 0;
 
-      for (let j = 0; j < dataLength; j++) {
-        rate += data[j];
+      for (let j = 0; j < analysers[i].fftSize; j++) {
+        sum += data[j];
       }
 
-      rate = rate / dataLength / 128 - 1;
+      // 平均値を算出して ...
+      const average = (sum / analysers[i].fftSize);
+
+      // 正規化する (-1 ~ 1)
+      // 0   -> -1
+      // 128 ->  0
+      // 255 ->  1
+      const nAverage = (average - 128) / 128;
+
       // rateが0に近いことが多いので0付近が大きくなるように適当にスケーリング
       // x: original rate -> y: scaling rate
       // y = 40x                (|x| <  0.01): 40倍に増幅
       // y = +-(2x/33 + 31/33)  (|x| >= 0.01): (+-0.01, +-0.4) と (+-1, +-1) を結ぶ線分
-      rate = Math.abs(rate) < 0.01 ? rate * 40 : Math.sign(rate) * (Math.abs(rate) * 0.06 + 0.94);
+      const rate = Math.abs(nAverage) < 0.01 ? nAverage * 40 : Math.sin(nAverage) * (Math.abs(nAverage) * 0.06 + 0.94);
 
       // ON: 音源に依存して変動 / OFF: 0.25固定
       const scl = (gains[i].gain.value === 0) ? { x: scale, y: scale, z: scale } : listenerScale(rate);
