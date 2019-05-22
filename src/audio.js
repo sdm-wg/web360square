@@ -1,6 +1,5 @@
 import AFRAME from 'aframe';
-import { BufferLoader } from './BufferLoader';
-import { setupHls, playVideo } from './video';
+import { setupHls, playVideo, pauseVideo, setCurrentTime } from './video';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
@@ -10,10 +9,11 @@ const compressor   = audiocontext.createDynamicsCompressor();
 const listener     = audiocontext.listener;
 
 const MAX_VOLUME = 0.5;
-const AUDIO_FILES = [
-  './assets/audio/KeyMix.mp3',
-  './assets/audio/BassMix.mp3',
-  './assets/audio/DrmsMix.mp3',
+const SPRITE_TIME = 194.61224489;
+const spriteTimes = [
+  { start: 784, end: 784 + SPRITE_TIME },
+  { start: 0,   end: SPRITE_TIME },
+  { start: 196, end: 196 + SPRITE_TIME }
 ];
 
 // 音関連の変数
@@ -24,6 +24,10 @@ const analysers = [];
 
 // ファイルのON/OFF管理変数は全部offにしておく
 const audioStates = [false, false, false];
+
+const prevCurrentTimes = [0, 0, 0];
+
+let audioBuffer = null;
 
 let isPlaying = false;
 let isLoading = true;
@@ -41,25 +45,80 @@ AFRAME.registerComponent('cursor-listener-switch', {
   init: function() {
     // 'touchstart' では, iOS でイベントが発生しない
     this.el.addEventListener('mousedown', function() {
-      if (isLoading || isPlaying) {
+      if (isLoading) {
         return;
       }
 
-      playVideo();
+      if (isPlaying) {
+        pauseVideo();
 
-      for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
-        gains[i].gain.value = MAX_VOLUME;
-        sources[i].start(0);
+        for (let i = 0, len = spriteTimes.length; i < len; i++) {
+          sources[i].stop(0);
+        }
+
+        this.setAttribute('material', 'color', 'cyan');
+        isPlaying = false;
+      } else {
+        playVideo();
+
+        for (let i = 0, len = spriteTimes.length; i < len; i++) {
+          analysers[i] = audiocontext.createAnalyser();
+
+          gains[i] = audiocontext.createGain();
+          gains[i].gain.value = MAX_VOLUME;
+
+          panners[i] = audiocontext.createPanner();
+          panners[i].panningModel  = 'equalpower';
+          panners[i].distanceModel = 'inverse';
+
+          // それぞれの音源の位置を取得して反映
+          const pos = document.getElementById(`sphere${i}`);
+          const worldPos = new THREE.Vector3();
+
+          worldPos.setFromMatrixPosition(pos.object3D.matrixWorld);
+
+          const { x, y, z } = worldPos;
+
+          panners[i].setPosition(x, y, z);
+
+          // `AudioBufferSourceNode` は使い捨てのノードなので, 停止したあとは再度生成する必要がある
+          sources[i] = audiocontext.createBufferSource();
+          sources[i].buffer = audioBuffer;
+
+          sources[i].connect(gains[i]);
+          gains[i].connect(panners[i]);
+          panners[i].connect(analysers[i]);
+          analysers[i].connect(mastergain);
+          mastergain.connect(compressor);
+          compressor.connect(audiocontext.destination);
+
+          sources[i].loop      = true;
+          sources[i].loopStart = spriteTimes[i].start;
+          sources[i].loopEnd   = spriteTimes[i].end;
+
+          let currentTime = prevCurrentTimes[i] > 0 ? (audiocontext.currentTime - prevCurrentTimes[i]) : 0;
+
+          if (currentTime > SPRITE_TIME) {
+              currentTime = 0;
+              prevCurrentTimes[i] = 0;
+          }
+
+          sources[i].start(0, (spriteTimes[i].start + currentTime), (spriteTimes[i].end - spriteTimes[i].start - currentTime));
+
+          setCurrentTime(currentTime);
+
+          prevCurrentTimes[i] = audiocontext.currentTime;
+        }
+
+        this.setAttribute('material', 'color', 'gray');
+        isPlaying = true;
       }
-
-      this.setAttribute('material', 'color', 'gray');
-      isPlaying = true;
     });
   }
 });
 
 // 各楽器の ON/OFF
-for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
+for (let i = 0, len = spriteTimes.length; i < len; i++) {
   AFRAME.registerComponent(`cursor-listener${i}`, {
     init: function() {
       this.el.setAttribute('geometry', 'primitive', 'sphere');
@@ -209,48 +268,28 @@ AFRAME.registerComponent('rotation-reader', {
 
 function load() {
   // 音声ファイルを読み込む
-  const bufferLoader = new BufferLoader(audiocontext, AUDIO_FILES, (bufferList) => {
-    for (let i = 0, len = AUDIO_FILES.length; i < len; i++) {
-      sources[i] = audiocontext.createBufferSource();
-      sources[i].buffer = bufferList[i];
+  const xhr = new XMLHttpRequest();
 
-      analysers[i] = audiocontext.createAnalyser();
+  xhr.open('GET', './assets/audio/original.mp3', true);
+  xhr.responseType = 'arraybuffer';
+  xhr.send(null);
 
-      gains[i] = audiocontext.createGain();
-      gains[i].gain.value = 0;
+  xhr.onload = () => {
+    audiocontext.decodeAudioData(xhr.response, (buffer) => {
+      audioBuffer = buffer;
 
-      panners[i] = audiocontext.createPanner();
-      panners[i].panningModel  = 'equalpower';
-      panners[i].distanceModel = 'inverse';
+      setupHls();
 
-      // それぞれの音源の位置を取得して反映
-      const pos = document.getElementById(`sphere${i}`);
-      const worldPos = new THREE.Vector3();
+      document.getElementById('sphere-switch').setAttribute('material', 'color', 'cyan');
+      isLoading = false;
+    }, () => {
+      // TODO: エラーハンドリング
+    });
+  };
 
-      worldPos.setFromMatrixPosition(pos.object3D.matrixWorld);
-
-      const { x, y, z } = worldPos;
-
-      panners[i].setPosition(x, y, z);
-
-      sources[i].connect(gains[i]);
-      gains[i].connect(panners[i]);
-      panners[i].connect(analysers[i]);
-      analysers[i].connect(mastergain);
-      mastergain.connect(compressor);
-      compressor.connect(audiocontext.destination);
-
-      sources[i].loop = true;
-    }
-
-    setupHls();
-
-    document.getElementById('sphere-switch').setAttribute('material', 'color', 'cyan');
-
-    isLoading = false;
-  });
-
-  bufferLoader.load();
+  // TODO: エラーハンドリング
+  // xhr.onerror = () => {
+  // };
 }
 
 export { audiocontext, load };
