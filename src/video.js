@@ -3,13 +3,16 @@ import Hls from 'hls.js';
 const playlistfile = './assets/video/video.m3u8';
 // const playlistfile = 'http://shin.hongo.wide.ad.jp:50080/video/billboard1_er/video.m3u8';
 
+let video   = null;
 let timerId = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  video = document.getElementById('video');
+}, true);
 
 export const setupHls = () => {
   if (Hls.isSupported()) {
-    const hls = new Hls({
-      startPosition: 0.4
-    });
+    const hls = new Hls();
 
     hls.loadSource(playlistfile);
     hls.attachMedia(video);
@@ -41,6 +44,21 @@ export const playVideo = () => {
       timerId = setTimeout(playVideo, 1000);
     });
   }
+};
+
+export const pauseVideo = () => {
+  // NOTE: https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
+  video.play()
+    .then(() => {
+      video.pause();
+    })
+    .catch(() => {
+      // TODO: エラーハンドリング
+    });
+};
+
+export const setCurrentTime = (currentTime) => {
+  video.currentTime = currentTime;
 };
 
 // const mediaCurrTime = (media, str) => {

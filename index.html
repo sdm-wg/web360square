@@ -8,13 +8,6 @@
       if (navigator.xr) {
         navigator.xr.requestDevice = () => Promise.reject();
       }
-
-      // HACK: Global Object
-      let video = null;
-
-      document.addEventListener('DOMContentLoaded', () => {
-        video = document.getElementById('video');
-      }, true);
     </script>
     <script src="./assets/vendor.js"></script>
     <script src="./assets/app.js"></script>
