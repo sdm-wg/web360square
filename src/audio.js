@@ -161,26 +161,27 @@ for (let i = 0, len = spriteTimes.length; i < len; i++) {
 
       let sum = 0;
 
+      // 振幅の大きさをとりたいので
+      // 128 との差の絶対値をとる
       for (let j = 0; j < analysers[i].fftSize; j++) {
-        sum += data[j];
+        sum += Math.abs(data[j] - 128);
       }
 
-      // 平均値を算出して ...
+      // 平均値を算出して ... (平均値は 0 ~ 128 に)
       const average = (sum / analysers[i].fftSize);
 
-      // 正規化する (-1 ~ 1)
-      // 0   -> -1
-      // 128 ->  0
-      // 255 ->  1
-      const nAverage = (average - 128) / 128;
+      // 正規化する (0 ~ 1)
+      // 0   -> 0
+      // 128 -> 1
+      const nAverage = average / 128;
 
-      // rateが0に近いことが多いので0付近が大きくなるように適当にスケーリング
+      // rateが小さいので指数関数でスケーリング
       // x: original rate -> y: scaling rate
-      // y = 40x                (|x| <  0.01): 40倍に増幅
-      // y = +-(2x/33 + 31/33)  (|x| >= 0.01): (+-0.01, +-0.4) と (+-1, +-1) を結ぶ線分
-      const rate = Math.abs(nAverage) < 0.01 ? nAverage * 40 : Math.sin(nAverage) * (Math.abs(nAverage) * 0.06 + 0.94);
+      // y = 1 - 2^(-120x) (~= 1 - exp(80x))
+      // x -> 0 付近が約 80 倍に増幅される
+      const rate = 1 - (2 ** (-120 * nAverage));
 
-      // ON: 音源に依存して変動 / OFF: 0.25固定
+      // ON: 音源に依存して変動 / OFF: 固定値
       const scl = (gains[i].gain.value === 0) ? { x: scale, y: scale, z: scale } : listenerScale(rate);
       const clr = (gains[i].gain.value === 0) ? 'gray' : listenerColor(rate);
 
@@ -200,6 +201,12 @@ const listenerScale = (rate) => {
 // [rate:小] blue < green < yellow < orange < red [rate:大]
 const listenerColor = (rate) => {
   const clr = [0, 0, 0];
+
+  // rate を -1 ~ 1 の値に変換
+  // rate =   0 -> -1
+  // rate = 0.5 ->  0
+  // rate =   1 ->  1
+  rate = 2 * rate - 1;
 
   // r成分
   if (rate < 0) {
