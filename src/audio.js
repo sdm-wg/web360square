@@ -1,5 +1,5 @@
 import AFRAME from 'aframe';
-import { setupHls, playVideo, pauseVideo, setCurrentTime } from './video';
+import { playVideo, pauseVideo, setCurrentTime } from './video';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 
@@ -284,8 +284,6 @@ function load() {
   xhr.onload = () => {
     audiocontext.decodeAudioData(xhr.response, (buffer) => {
       audioBuffer = buffer;
-
-      setupHls();
 
       document.getElementById('sphere-switch').setAttribute('material', 'color', 'cyan');
       isLoading = false;

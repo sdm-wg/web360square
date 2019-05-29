@@ -2,6 +2,7 @@
 
 import { MouseEventWrapper } from './MouseEventWrapper';
 import { audiocontext, load } from './audio';
+import { setupHls } from './video';
 
 async function setup() {
   if (audiocontext.state !== 'running') {
@@ -13,5 +14,6 @@ async function setup() {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener(MouseEventWrapper.START, setup, false);
+  setupHls();
   load();
 }, true);
