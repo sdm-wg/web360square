@@ -92,7 +92,6 @@ AFRAME.registerComponent('cursor-listener-switch', {
           mastergain.connect(compressor);
           compressor.connect(audiocontext.destination);
 
-          sources[i].loop      = true;
           sources[i].loopStart = spriteTimes[i].start;
           sources[i].loopEnd   = spriteTimes[i].end;
 
@@ -104,6 +103,9 @@ AFRAME.registerComponent('cursor-listener-switch', {
           }
 
           sources[i].start(0, (spriteTimes[i].start + currentTime), (spriteTimes[i].end - spriteTimes[i].start - currentTime));
+
+          // Chrome の場合, `AudioBufferSourceNode#start` に設定しないとループしない
+          sources[i].loop = true;
 
           setCurrentTime(currentTime);
 
