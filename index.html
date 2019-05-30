@@ -18,7 +18,8 @@
     </a-scene>
     <a-scene id="ascn">
       <a-assets>
-        <video id="video" loop>
+        <!-- 空ではあるが, `src` 属性は必要 (https://github.com/sdm-wg/web360square/issues/18) -->
+        <video id="video" src="" loop muted />
       </a-assets>
       <a-entity id="camera" camera rotation-reader look-controls wasd-controls="acceleration: 200;"
         position="0 1.6 0">
