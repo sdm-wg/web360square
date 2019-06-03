@@ -34,14 +34,18 @@
       </a-entity>
       <!-- video -->
       <a-videosphere src="#video" rotation="0 270 0"></a-videosphere>
-      <!-- switch -->
+
+      <!-- switch for keio concert -->
+      <a-entity id="sphere-switch" class="clickable" cursor-listener-switch geometry="primitive: sphere" position="-1.4 1 -7.5"
+        scale="0.25 0.25 0.25" material="color: gray"></a-entity>
+      <a-text position="-1.1 1 -7.5" color="white" value="<- click to play"></a-text>
+
+      <!-- switch for billboard -->
+      <!--
       <a-entity id="sphere-switch" class="clickable" cursor-listener-switch geometry="primitive: sphere" position="0 -0.5 -3"
         scale="0.25 0.25 0.25" material="color: gray"></a-entity>
       <a-text position="0.3 -0.5 -3" color="white" value="<- click to play"></a-text>
-      <!-- music sources -->
-      <a-entity id="sphere0" class="clickable" cursor-listener0></a-entity>
-      <a-entity id="sphere1" class="clickable" cursor-listener1></a-entity>
-      <a-entity id="sphere2" class="clickable" cursor-listener2></a-entity>
+      -->
     </a-scene>
   </body>
 </html>

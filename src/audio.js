@@ -9,6 +9,41 @@ const compressor   = audiocontext.createDynamicsCompressor();
 const listener     = audiocontext.listener;
 
 const MAX_VOLUME = 0.5;
+
+// ----- ----- -----
+// コンテンツ依存の定数・変数
+
+// keio concert contents
+const audioFile = 'http://sdm.hongo.wide.ad.jp/~kawa/audio/keio-concert-audiosprited/koc.mp3';
+const SPRITE_TIME = 86.6250113378685;
+const spriteTimes = [
+  { start: 0,    end: SPRITE_TIME },        // A_1st_Vn
+  { start: 88,   end: 88 + SPRITE_TIME },   // B_Via
+  { start: 176,  end: 176 + SPRITE_TIME },  // C_Vc
+  { start: 264,  end: 264 + SPRITE_TIME },  // D_2nd_Vn
+  { start: 352,  end: 352 + SPRITE_TIME },  // E_Flaut
+  { start: 440,  end: 440 + SPRITE_TIME },  // F_OB_damore
+  { start: 528,  end: 528 + SPRITE_TIME },  // G_Theorbe
+  { start: 616,  end: 616 + SPRITE_TIME },  // H_Fg
+  { start: 704,  end: 704 + SPRITE_TIME }   // Cemb
+];
+
+// 各楽器のスイッチの位置
+const positions = [
+  { x:  3.05, y: 1, z: -7.33 }, // A_1st_Vn
+  { x:  1.86, y: 1, z: -3.24 }, // B_Via
+  { x: -1.58, y: 1, z:  3.18 }, // C_Vc
+  { x: -6.36, y: 1, z: -6.79 }, // D_2nd_Vn
+  { x:  6.08, y: 1, z: -2.51 }, // E_Flaut
+  { x:  5.14, y: 1, z:  1.03 }, // F_OB_damore
+  { x: -5.17, y: 1, z:  1.89 }, // G_Theorbe
+  { x: -5.77, y: 1, z: -1.29 }, // H_Fg
+  { x: -9.19, y: 1, z: -1.41 }  // Cemb
+];
+
+/*
+// billboard contents
+const audioFile = './assets/audio/original.mp3';
 const SPRITE_TIME = 194.61224489;
 const spriteTimes = [
   { start: 784, end: 784 + SPRITE_TIME },
@@ -16,28 +51,36 @@ const spriteTimes = [
   { start: 196, end: 196 + SPRITE_TIME }
 ];
 
+// 各楽器のスイッチの位置
+const positions = [
+  { x:    3, y: 0.5, z: -5 },
+  { x:   -3, y:   1, z: -5 },
+  { x: -0.5, y: 0.7, z: -5 }
+];
+*/
+// ----- ----- -----
+
 // 音関連の変数
 const sources   = [];
 const gains     = [];
 const panners   = [];
 const analysers = [];
 
-// ファイルのON/OFF管理変数は全部offにしておく
-const audioStates = [false, false, false];
+// ファイルの ON/OFF 管理変数
+const audioStates = [];
+const prevCurrentTimes = [];
 
-const prevCurrentTimes = [0, 0, 0];
+for (let i = 0, len = spriteTimes.length; i < len; i++) {
+  audioStates[i] = false;
+  prevCurrentTimes[i] = 0;
+}
 
 let audioBuffer = null;
 
 let isPlaying = false;
 let isLoading = true;
 
-// 各楽器のスイッチの変数
-const positions = [
-  { x:    3, y: 0.5, z: -5 },
-  { x:   -3, y:   1, z: -5 },
-  { x: -0.5, y: 0.7, z: -5 }
-];
+// 楽器のスイッチの拡大率
 const scale = 0.3; // 見た目の問題で仮で0.3としておきます
 
 // 音楽を再生するためのスイッチ(色: cyan)を押したときの処理
@@ -493,7 +536,7 @@ function load() {
   // 音声ファイルを読み込む
   const xhr = new XMLHttpRequest();
 
-  xhr.open('GET', './assets/audio/original.mp3', true);
+  xhr.open('GET', audioFile, true);
   xhr.responseType = 'arraybuffer';
   xhr.send(null);
 
@@ -504,6 +547,22 @@ function load() {
       setupHls();
 
       document.getElementById('sphere-switch').setAttribute('material', 'color', 'cyan');
+
+      // 各楽器の ON/OFF スイッチの DOM を動的作成する
+      const ascnEl = document.getElementById('ascn');
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0, len = spriteTimes.length; i < len; i++) {
+        // 各楽器の ON/OFF スイッチ作成
+        const listenerEl = document.createElement('a-entity');
+        listenerEl.setAttribute('id', `sphere${i}`);
+        listenerEl.setAttribute('class', 'clickable');
+        listenerEl.setAttribute(`cursor-listener${i}`, '');
+        fragment.appendChild(listenerEl);
+      }
+
+      ascnEl.appendChild(fragment);
+
       isLoading = false;
     }, () => {
       // TODO: エラーハンドリング

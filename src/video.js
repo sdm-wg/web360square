@@ -1,6 +1,8 @@
 import Hls from 'hls.js';
 
-const playlistfile = './assets/video/video.m3u8';
+const playlistfile = 'http://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/360square-keio-orche2/video.m3u8';
+// const playlistfile = 'http://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/billboard1_er/video.m3u8';
+// const playlistfile = './assets/video/video.m3u8';
 // const playlistfile = 'http://shin.hongo.wide.ad.jp:50080/video/billboard1_er/video.m3u8';
 
 let video   = null;
