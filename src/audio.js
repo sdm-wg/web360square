@@ -83,21 +83,6 @@ let isLoading = true;
 // 楽器のスイッチの拡大率
 const scale = 0.3; // 見た目の問題で仮で0.3としておきます
 
-
-// 各楽器の ON/OFF スイッチの DOM を動的作成する
-document.addEventListener('DOMContentLoaded', () => {
-  const ascnEl = document.getElementById('ascn');
-
-  for (let i = 0, len = spriteTimes.length; i < len; i++) {
-    // 各楽器の ON/OFF スイッチ作成
-    const listenerEl = document.createElement('a-entity');
-    listenerEl.setAttribute('id', `sphere${i}`);
-    listenerEl.setAttribute('class', 'clickable');
-    listenerEl.setAttribute(`cursor-listener${i}`, '');
-    ascnEl.appendChild(listenerEl);
-  }
-}, true);
-
 // 音楽を再生するためのスイッチ(色: cyan)を押したときの処理
 AFRAME.registerComponent('cursor-listener-switch', {
   init: function() {
@@ -562,6 +547,22 @@ function load() {
       setupHls();
 
       document.getElementById('sphere-switch').setAttribute('material', 'color', 'cyan');
+
+      // 各楽器の ON/OFF スイッチの DOM を動的作成する
+      const ascnEl = document.getElementById('ascn');
+      const fragment = document.createDocumentFragment();
+
+      for (let i = 0, len = spriteTimes.length; i < len; i++) {
+        // 各楽器の ON/OFF スイッチ作成
+        const listenerEl = document.createElement('a-entity');
+        listenerEl.setAttribute('id', `sphere${i}`);
+        listenerEl.setAttribute('class', 'clickable');
+        listenerEl.setAttribute(`cursor-listener${i}`, '');
+        fragment.appendChild(listenerEl);
+      }
+
+      ascnEl.appendChild(fragment);
+
       isLoading = false;
     }, () => {
       // TODO: エラーハンドリング
