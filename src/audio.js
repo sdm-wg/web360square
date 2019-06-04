@@ -14,7 +14,8 @@ const MAX_VOLUME = 0.5;
 // コンテンツ依存の定数・変数
 
 // keio concert contents
-const audioFile = 'http://sdm.hongo.wide.ad.jp/~kawa/audio/keio-concert-audiosprited/koc.mp3';
+const audioFile = './assets/audio/koc.mp3';
+//const audioFile = 'http://sdm.hongo.wide.ad.jp/~kawa/audio/keio-concert-audiosprited/koc.mp3';
 const SPRITE_TIME = 86.6250113378685;
 const spriteTimes = [
   { start: 0,    end: SPRITE_TIME },        // A_1st_Vn
