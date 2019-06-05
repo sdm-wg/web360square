@@ -1,69 +1,46 @@
 import Hls from 'hls.js';
 
-const playlistfile = 'http://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/360square-keio-orche2/video.m3u8';
-// const playlistfile = 'http://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/billboard1_er/video.m3u8';
-// const playlistfile = './assets/video/video.m3u8';
-// const playlistfile = 'http://shin.hongo.wide.ad.jp:50080/video/billboard1_er/video.m3u8';
+const playlistfiles = {
+  concert: 'https://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/360square-keio-orche2/video.m3u8',
+  pops   : 'https://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/billboard1_er/video.m3u8'
+};
 
-let video   = null;
-let timerId = null;
+const videos = { concert: null, pops: null };
 
 document.addEventListener('DOMContentLoaded', () => {
-  video = document.getElementById('video');
+  videos.concert = document.getElementById('concert-video');
+  videos.pops    = document.getElementById('pops-video');
 }, true);
 
-export const setupHls = () => {
+export const setupHls = (genre) => {
   if (Hls.isSupported()) {
     const hls = new Hls();
 
-    hls.loadSource(playlistfile);
-    hls.attachMedia(video);
-
-    hls.on(Hls.Events.MANIFEST_PARSED, () => {
-      // playVideo();
-      console.log('video is ready');
-    });
-  } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-    video.src = playlistfile;
-
-    video.addEventListener('loadedmetadata', () => {
-      // playVideo();
-      console.log('video is ready');
-    });
+    hls.loadSource(playlistfiles[genre]);
+    hls.attachMedia(videos[genre]);
+  } else if (videos[genre].canPlayType('application/vnd.apple.mpegurl')) {
+    videos[genre].src = playlistfiles[genre];
   }
 };
 
-// video.play()でPromiseがrejectされる場合（音声が必要な場合など）の対策
-// 1秒ごとに再生を試みる（クライアントが何らかの操作を加えると再生できるようになる）
-export const playVideo = () => {
-  const promise = video.play();
-
-  if (promise !== undefined) {
-    promise.then(() => {
-      clearTimeout(timerId);
-      timerId = null;
-    }).catch(() => {
-      timerId = setTimeout(playVideo, 1000);
-    });
+export const playVideo = async (genre) => {
+  try {
+    await videos[genre].play();
+  } catch (error) {
+    // TOD: エラーハンドリング
   }
 };
 
-export const pauseVideo = () => {
+export const pauseVideo = async (genre) => {
   // NOTE: https://developers.google.com/web/updates/2017/06/play-request-was-interrupted
-  video.play()
-    .then(() => {
-      video.pause();
-    })
-    .catch(() => {
-      // TODO: エラーハンドリング
-    });
+  try {
+    await videos[genre].play();
+    videos[genre].pause();
+  } catch (error) {
+    // TODO: エラーハンドリング
+  }
 };
 
-export const setCurrentTime = (currentTime) => {
-  video.currentTime = currentTime;
+export const setCurrentTime = (currentTime, genre) => {
+  videos[genre].currentTime = currentTime;
 };
-
-// const mediaCurrTime = (media, str) => {
-//   console.log(`${str} CURRENT TIME: ${media.currentTime}`);
-//   setTimeout(() => { mediaCurrTime(media, str) }, 1000);
-// };

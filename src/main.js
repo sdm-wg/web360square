@@ -45,5 +45,5 @@ document.addEventListener('DOMContentLoaded', () => {
     concert.classList.add('-hidden');
     pops.classList.add('-hidden');
     front.classList.remove('-hidden');
-  });
+  }, false);
 }, true);
