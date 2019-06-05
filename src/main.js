@@ -13,7 +13,11 @@ async function setup() {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener(MouseEventWrapper.START, setup, false);
-  load();
+
+  load(() => {
+    document.getElementById('loading-page').classList.add('-hidden');
+    document.getElementById('front-page').classList.remove('-hidden');
+  });
 
   const front   = document.getElementById('front-page');
   const concert = document.getElementById('concert');

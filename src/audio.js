@@ -430,7 +430,7 @@ GENRES.forEach((genre) => {
   });
 });
 
-function load() {
+function load(callback) {
   GENRES.forEach((genre) => {
     // 音声ファイルを読み込む
     const xhr = new XMLHttpRequest();
@@ -465,6 +465,8 @@ function load() {
         ascnEl.appendChild(fragment);
 
         isLoading[genre] = false;
+
+        callback();
       }, () => {
         // TODO: エラーハンドリング
       });
