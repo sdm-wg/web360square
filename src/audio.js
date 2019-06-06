@@ -52,7 +52,8 @@ const positions = {
     { x:  5.14, y: 1, z:  1.03 }, // F_OB_damore
     { x: -5.17, y: 1, z:  1.89 }, // G_Theorbe
     { x: -5.77, y: 1, z: -1.29 }, // H_Fg
-    { x: -9.19, y: 1, z: -1.41 }  // Cemb
+    { x: -9.19, y: 1, z: -0.91 }  // Cemb
+//    { x: -9.19, y: 1, z: -1.41 }  // Cemb
   ],
   pops: [
     { x:    3, y: 0.5, z: -5 },
@@ -249,7 +250,7 @@ GENRES.forEach((genre) => {
       init: function() {
         this.el.setAttribute('geometry', {
           primitive: 'sphere',
-          radius: 0.6
+          radius: 1
         });
         this.el.setAttribute('position', positions[genre][i]);
         this.el.setAttribute('scale', { x: scale, y: scale, z: scale });
@@ -277,7 +278,7 @@ GENRES.forEach((genre) => {
             depth: boxWidth
           });
 
-          // スイッチの球(半径 0.5 )の中心から boxVec 方向 1 離れた位置に配置
+          // スイッチの球(半径 1 )の中心から boxVec 方向 1 離れた位置に配置
           // boxHeight / 2 は配置の基点を box の中心から box の端に変えるための補正項
           boxEl.setAttribute('position', boxVec.clone().multiplyScalar(boxHeight / 2 + 1));
           boxEl.setAttribute('material', {
@@ -386,8 +387,8 @@ GENRES.forEach((genre) => {
           // x -> 0 付近が約 14 倍に増幅される
           const rate = 1 - (2 ** (-20 * nAverage));
 
-          const boxHeight = (gains[genre][i].gain.value === 0) ? 0.1 : calcHeight(rate);
-          const boxColor  = (gains[genre][i].gain.value === 0) ? 'gray' : calcColor(rate);
+          const boxHeight = (!isPlaying[genre] || gains[genre][i].gain.value === 0) ? 0.1 : calcHeight(rate);
+          const boxColor  = (!isPlaying[genre] || gains[genre][i].gain.value === 0) ? 'gray' : calcColor(rate);
 
           const boxVec = boxVecs[j];
           const boxEl = boxEls[j];
