@@ -1,4 +1,4 @@
-# A-Frame Sample
+# Web360Square
 
 ## Setup
 
