@@ -21,33 +21,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const front   = document.getElementById('front-page');
   const concert = document.getElementById('concert');
-  const pops    = document.getElementById('pops');
+  const jazz    = document.getElementById('jazz');
 
   document.querySelector('a[href="#concert"]').addEventListener(MouseEventWrapper.CLICK, (event) => {
     // `onpopstate` が発火しないようにする
     event.preventDefault();
 
     front.classList.add('-hidden');
-    pops.classList.add('-hidden');
+    jazz.classList.add('-hidden');
     concert.classList.remove('-hidden');
 
     history.pushState(null, null, '/#/concert');
   }, false);
 
-  document.querySelector('a[href="#pops"]').addEventListener(MouseEventWrapper.CLICK, (event) => {
+  document.querySelector('a[href="#jazz"]').addEventListener(MouseEventWrapper.CLICK, (event) => {
     // `onpopstate` が発火しないようにする
     event.preventDefault();
 
     front.classList.add('-hidden');
     concert.classList.add('-hidden');
-    pops.classList.remove('-hidden');
+    jazz.classList.remove('-hidden');
 
-    history.pushState(null, null, '/#/pops');
+    history.pushState(null, null, '/#/jazz');
   }, false);
 
   window.addEventListener('popstate', () => {
     concert.classList.add('-hidden');
-    pops.classList.add('-hidden');
+    jazz.classList.add('-hidden');
     front.classList.remove('-hidden');
   }, false);
 }, true);
