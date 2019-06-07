@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
     jazz.classList.add('-hidden');
     concert.classList.remove('-hidden');
 
-    history.pushState(null, null, '/#/concert');
+    history.pushState(null, null, `${location.pathname}#/concert`);
   }, false);
 
   document.querySelector('a[href="#jazz"]').addEventListener(MouseEventWrapper.CLICK, (event) => {
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     concert.classList.add('-hidden');
     jazz.classList.remove('-hidden');
 
-    history.pushState(null, null, '/#/jazz');
+    history.pushState(null, null, `${location.pathname}#/jazz`);
   }, false);
 
   window.addEventListener('popstate', () => {
