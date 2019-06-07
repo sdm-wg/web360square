@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     jazz.classList.add('-hidden');
     concert.classList.remove('-hidden');
 
-    history.pushState(null, null, '/#/concert');
+    history.pushState(null, null, `${location.pathname}#/concert`);
 
     // HACK: リサイズすると Clickable になることを利用して, フルスクリーン -> フルスクリーン解除する
     setTimeout(() => {
@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     concert.classList.add('-hidden');
     jazz.classList.remove('-hidden');
 
-    history.pushState(null, null, '/#/jazz');
+    history.pushState(null, null, `${location.pathname}#/jazz`);
 
     // HACK: リサイズすると Clickable になることを利用して, フルスクリーン -> フルスクリーン解除する
     setTimeout(() => {
