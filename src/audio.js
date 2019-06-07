@@ -14,12 +14,12 @@ const MAX_VOLUME = 0.5;
 // コンテンツ依存の定数・変数
 const audioFiles = {
   concert: 'https://sdm.hongo.wide.ad.jp/~kawa/audio/keio-concert-audiosprited/koc.mp3',
-  pops   : './assets/audio/original.mp3'
+  jazz   : './assets/audio/original.mp3'
 };
 
 const SPRITE_TIMES = {
   concert: 86.6250113378685,
-  pops   : 194.61224489
+  jazz   : 194.61224489
 };
 
 const spriteTimes = {
@@ -34,10 +34,10 @@ const spriteTimes = {
     { start: 616,  end: 616 + SPRITE_TIMES.concert },  // H_Fg
     { start: 704,  end: 704 + SPRITE_TIMES.concert }   // Cemb
   ],
-  pops: [
-    { start: 784, end: 784 + SPRITE_TIMES.pops },  // Keyboard
-    { start: 0,   end: SPRITE_TIMES.pops },        // Bass
-    { start: 196, end: 196 + SPRITE_TIMES.pops }   // Drums
+  jazz: [
+    { start: 784, end: 784 + SPRITE_TIMES.jazz },  // Keyboard
+    { start: 0,   end: SPRITE_TIMES.jazz },        // Bass
+    { start: 196, end: 196 + SPRITE_TIMES.jazz }   // Drums
   ]
 };
 
@@ -55,7 +55,7 @@ const positions = {
     { x: -9.19, y: 1, z: -0.91 }  // Cemb
 //    { x: -9.19, y: 1, z: -1.41 }  // Cemb
   ],
-  pops: [
+  jazz: [
     { x:    3, y: 0.5, z: -5 },
     { x:   -3, y:   1, z: -5 },
     { x: -0.5, y: 0.7, z: -5 }
@@ -63,29 +63,29 @@ const positions = {
 };
 
 // 音関連の変数
-const sources   = { concert: [], pops: [] };
-const gains     = { concert: [], pops: [] };
-const panners   = { concert: [], pops: [] };
-const analysers = { concert: [], pops: [] };
+const sources   = { concert: [], jazz: [] };
+const gains     = { concert: [], jazz: [] };
+const panners   = { concert: [], jazz: [] };
+const analysers = { concert: [], jazz: [] };
 
 // ファイルの ON/OFF 管理変数
-const audioStates      = { concert: [], pops: [] };
-const prevCurrentTimes = { concert: [], pops: [] };
+const audioStates      = { concert: [], jazz: [] };
+const prevCurrentTimes = { concert: [], jazz: [] };
 
 for (let i = 0, len = spriteTimes.concert.length; i < len; i++) {
   audioStates.concert[i] = false;
   prevCurrentTimes.concert[i] = 0;
 }
 
-for (let i = 0, len = spriteTimes.pops.length; i < len; i++) {
-  audioStates.pops[i] = false;
-  prevCurrentTimes.pops[i] = 0;
+for (let i = 0, len = spriteTimes.jazz.length; i < len; i++) {
+  audioStates.jazz[i] = false;
+  prevCurrentTimes.jazz[i] = 0;
 }
 
-const audioBuffer = { concert: null, pops: null };
+const audioBuffer = { concert: null, jazz: null };
 
-const isPlaying = { concert: false, pops: false };
-const isLoading = { concert: true, posp: true };
+const isPlaying = { concert: false, jazz: false };
+const isLoading = { concert: true, jazz: true };
 
 // 楽器のスイッチの拡大率
 const scale = 0.3; // 見た目の問題で仮で0.3としておきます

@@ -2,14 +2,14 @@ import Hls from 'hls.js';
 
 const playlistfiles = {
   concert: 'https://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/360square-keio-orche2/video.m3u8',
-  pops   : 'https://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/billboard1_er/video.m3u8'
+  jazz   : 'https://sdm.hongo.wide.ad.jp/~shin/assets/video/hls/billboard1_er/video.m3u8'
 };
 
-const videos = { concert: null, pops: null };
+const videos = { concert: null, jazz: null };
 
 document.addEventListener('DOMContentLoaded', () => {
   videos.concert = document.getElementById('concert-video');
-  videos.pops    = document.getElementById('pops-video');
+  videos.jazz    = document.getElementById('jazz-video');
 }, true);
 
 export const setupHls = (genre) => {

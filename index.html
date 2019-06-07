@@ -101,7 +101,7 @@
         background-color: #fff;
       }
 
-      a[href="#pops"] {
+      a[href="#jazz"] {
         margin-left: 16px;
         border: 1px solid #fff;
         color: #fff;
@@ -148,7 +148,7 @@
       <h1>SDM</h1>
       <nav>
         <a href="#concert">CONCERT</a>
-        <a href="#pops">POPS</a>
+        <a href="#jazz">JAZZ</a>
       </nav>
     </div>
     <div id="loading-page">
@@ -157,65 +157,66 @@
       <span aria-label="Now Loading ..."></span>
     </div>
     <div id="concert" class="-hidden">
-      <a-scene>
-        <a-sky color="#000000"></a-sky>
-      </a-scene>
       <a-scene id="concert-ascn">
         <a-assets>
           <!-- 空ではあるが, `src` 属性は必要 (https://github.com/sdm-wg/web360square/issues/18) -->
           <video id="concert-video" src="" loop muted />
         </a-assets>
         <a-entity id="concert-camera" camera concert-rotation-reader look-controls position="0 1.6 0">
-          <!--
-          <a-entity cursor="rayOrigin: mouse" position="0 0 -1"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat">
-          </a-entity>
-          -->
-          <a-entity position="0 0 -1" cursor="rayOrigin: mouse" raycaster="objects: .clickable"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat">
+          <a-entity
+            position="0 0 -1"
+            cursor="rayOrigin: mouse"
+            raycaster="objects: .clickable"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+            material="color: black; shader: flat"
+          >
           </a-entity>
         </a-entity>
         <!-- video -->
         <a-videosphere src="#concert-video" rotation="0 270 0"></a-videosphere>
-
         <!-- switch for keio concert -->
-        <a-entity id="concert-sphere-switch" class="clickable" concert-cursor-listener-switch geometry="primitive: sphere" position="-1.4 1 -7.5"
-          scale="0.25 0.25 0.25" material="color: gray"></a-entity>
+        <a-entity
+          id="concert-sphere-switch"
+          class="clickable"
+          concert-cursor-listener-switch
+          geometry="primitive: sphere"
+          position="-1.4 1 -7.5"
+          scale="0.25 0.25 0.25"
+          material="color: gray"
+        >
+        </a-entity>
         <a-text position="-1.1 1 -7.5" color="white" value="<- click to play"></a-text>
-
-        <!-- switch for billboard -->
-        <!--
-        <a-entity id="sphere-switch" class="clickable" cursor-listener-switch geometry="primitive: sphere" position="0 -0.5 -3"
-          scale="0.25 0.25 0.25" material="color: gray"></a-entity>
-        <a-text position="0.3 -0.5 -3" color="white" value="<- click to play"></a-text>
-        -->
       </a-scene>
     </div>
-    <div id="pops" class="-hidden">
-      <a-scene>
-        <a-sky color="#000000"></a-sky>
-      </a-scene>
-      <a-scene id="pops-ascn">
+    <div id="jazz" class="-hidden">
+      <a-scene id="jazz-ascn">
         <a-assets>
           <!-- 空ではあるが, `src` 属性は必要 (https://github.com/sdm-wg/web360square/issues/18) -->
-          <video id="pops-video" src="" loop muted />
+          <video id="jazz-video" src="" loop muted />
         </a-assets>
-        <a-entity id="pops-camera" camera pops-rotation-reader look-controls wasd-controls="acceleration: 200;"
-          position="0 1.6 0">
-          <!--
-          <a-entity cursor="rayOrigin: mouse" position="0 0 -1"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat">
-          </a-entity>
-          -->
-          <a-entity position="0 0 -1" cursor="rayOrigin: mouse" raycaster="objects: .clickable"
-            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03" material="color: black; shader: flat">
+        <a-entity id="jazz-camera" camera jazz-rotation-reader look-controls position="0 1.6 0">
+          <a-entity
+            position="0 0 -1"
+            cursor="rayOrigin: mouse"
+            raycaster="objects: .clickable"
+            geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
+            material="color: black; shader: flat"
+          >
           </a-entity>
         </a-entity>
         <!-- video -->
-        <a-videosphere src="#pops-video" rotation="0 270 0"></a-videosphere>
+        <a-videosphere src="#jazz-video" rotation="0 270 0"></a-videosphere>
         <!-- switch -->
-        <a-entity id="pops-sphere-switch" class="clickable" pops-cursor-listener-switch geometry="primitive: sphere" position="0 -0.5 -3"
-          scale="0.25 0.25 0.25" material="color: gray"></a-entity>
+        <a-entity
+          id="jazz-sphere-switch"
+          class="clickable"
+          jazz-cursor-listener-switch
+          geometry="primitive: sphere"
+          position="0 -0.5 -3"
+          scale="0.25 0.25 0.25"
+          material="color: gray"
+        >
+        </a-entity>
         <a-text position="0.3 -0.5 -3" color="white" value="<- click to play"></a-text>
       </a-scene>
     </div>
