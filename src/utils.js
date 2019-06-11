@@ -1,4 +1,4 @@
-export const GENRES = ['concert', 'pops'];
+export const GENRES = ['concert', 'jazz'];
 
 // 配列をシャッフルする(boxVecs用)
 export const arrayShuffle = (arr) => {
