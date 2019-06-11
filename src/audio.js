@@ -13,8 +13,8 @@ const MAX_VOLUME = 0.5;
 
 // コンテンツ依存の定数・変数
 const audioFiles = {
-  concert: 'https://sdm.hongo.wide.ad.jp/~kawa/audio/keio-concert-audiosprited/koc.mp3',
-  jazz   : './assets/audio/original.mp3'
+  concert: 'https://sdm.hongo.wide.ad.jp/~kawa/asset/keioconcert-audiosprite/kc-64.mp3',
+  jazz   : 'https://sdm.hongo.wide.ad.jp/~kawa/asset/billboard2016-audiosprite/bb-64kbps.mp3'
 };
 
 const SPRITE_TIMES = {
