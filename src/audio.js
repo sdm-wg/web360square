@@ -499,7 +499,9 @@ function load(callback) {
 
         isLoading[genre] = false;
 
-        callback();
+        if (!isLoading.concert && !isLoading.jazz) {
+          callback();
+        }
       }, () => {
         // TODO: エラーハンドリング
       });
