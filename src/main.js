@@ -15,8 +15,14 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener(MouseEventWrapper.START, setup, false);
 
   load(() => {
+    // HTML に最初から `-hidden` をつけてしまうと, clickable にならないので,
+    // A-Frame の要素がすべて DOM ツリーに構築されてから `class` 属性を付加する
+    concert.classList.add('-hidden');
+    jazz.classList.add('-hidden');
+
+    front.classList.remove('-hidden');
+
     document.getElementById('loading-page').classList.add('-hidden');
-    document.getElementById('front-page').classList.remove('-hidden');
   });
 
   const front   = document.getElementById('front-page');

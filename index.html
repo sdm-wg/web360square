@@ -34,10 +34,11 @@
         position: absolute;
         top: 0;
         left: 0;
+        z-index: 10000;  /* ローディング時に canvas が見えないようにする */
         display: -webkit-flex;
         display: flex;
-        -webkit-flex-direction: rows;
-        flex-direction: rows;
+        -webkit-flex-direction: row;
+        flex-direction: row;
         -webkit-align-items: center;
         align-items: center;
         -webkit-justify-content: center;
@@ -54,7 +55,7 @@
         transition: all 0.6s ease;
       }
 
-      .-hidden {
+      body > div.-hidden {
         z-index: 1;
         transform: scale(0.5);
         opacity: 0;
@@ -156,7 +157,7 @@
       <span aria-label="Now Loading ..."></span>
       <span aria-label="Now Loading ..."></span>
     </div>
-    <div id="concert" class="-hidden">
+    <div id="concert">
       <a-scene id="concert-ascn">
         <a-assets>
           <!-- 空ではあるが, `src` 属性は必要 (https://github.com/sdm-wg/web360square/issues/18) -->
@@ -188,7 +189,7 @@
         <a-text position="-1.1 1 -7.5" color="white" value="<- click to play"></a-text>
       </a-scene>
     </div>
-    <div id="jazz" class="-hidden">
+    <div id="jazz">
       <a-scene id="jazz-ascn">
         <a-assets>
           <!-- 空ではあるが, `src` 属性は必要 (https://github.com/sdm-wg/web360square/issues/18) -->
