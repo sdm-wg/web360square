@@ -1,5 +1,5 @@
 import AFRAME from 'aframe';
-import { setupHls, playVideo, pauseVideo, setCurrentTime } from './video';
+import { setupHls, playVideo, pauseVideo, setCurrentTime, looseSync } from './video';
 import { GENRES, arrayShuffle, calcHeight, calcColor } from './utils';
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -18,7 +18,8 @@ const audioFiles = {
 };
 
 const SPRITE_TIMES = {
-  concert: 86.6250113378685,
+  concert: 82.088821,
+  //concert: 86.6250113378685,
   pops   : 194.61224489
 };
 
@@ -70,17 +71,22 @@ const analysers = { concert: [], pops: [] };
 
 // ファイルの ON/OFF 管理変数
 const audioStates      = { concert: [], pops: [] };
-const prevCurrentTimes = { concert: [], pops: [] };
 
 for (let i = 0, len = spriteTimes.concert.length; i < len; i++) {
   audioStates.concert[i] = false;
-  prevCurrentTimes.concert[i] = 0;
 }
 
 for (let i = 0, len = spriteTimes.pops.length; i < len; i++) {
   audioStates.pops[i] = false;
-  prevCurrentTimes.pops[i] = 0;
 }
+
+// 音声の再生時間に関する変数
+const prevPausedRange = {
+  concert: { start: 0, end: 0 },
+  pops   : { start: 0, end: 0 }
+};
+const pausedTotal = { concert: 0, pops: 0 };
+const currentTime = { concert: 0, pops: 0 };
 
 const audioBuffer = { concert: null, pops: null };
 
@@ -109,6 +115,8 @@ GENRES.forEach((genre) => {
 
           this.setAttribute('material', 'color', 'cyan');
           isPlaying[genre] = false;
+
+          prevPausedRange[genre].start = audiocontext.currentTime;
         } else {
           playVideo(genre);
 
@@ -151,31 +159,56 @@ GENRES.forEach((genre) => {
             sources[genre][i].loopStart = spriteTimes[genre][i].start;
             sources[genre][i].loopEnd   = spriteTimes[genre][i].end;
 
-            let currentTime = prevCurrentTimes[genre][i] > 0 ? (audiocontext.currentTime - prevCurrentTimes[genre][i]) : 0;
-
-            if (currentTime > SPRITE_TIMES[genre]) {
-                currentTime = 0;
-                prevCurrentTimes[genre][i] = 0;
-            }
-
             sources[genre][i].start(
               0,
-              (spriteTimes[genre][i].start + currentTime),
-              (spriteTimes[genre][i].end - spriteTimes[genre][i].start - currentTime)
+              (spriteTimes[genre][i].start + currentTime[genre]),
+              (spriteTimes[genre][i].end - spriteTimes[genre][i].start - currentTime[genre])
             );
 
             // Chrome の場合, `AudioBufferSourceNode#start` に設定しないとループしない
             sources[genre][i].loop = true;
-
-            setCurrentTime(currentTime, genre);
-
-            prevCurrentTimes[genre][i] = audiocontext.currentTime;
           }
+
+          setCurrentTime(currentTime[genre], genre);
 
           this.setAttribute('material', 'color', 'gray');
           isPlaying[genre] = true;
         }
       });
+    },
+    tick: function() {
+      if (isLoading[genre]) {
+        return;
+      }
+
+      if (isPlaying[genre]) {
+        if (prevPausedRange[genre].end > 0){
+          // pause していた時間がある場合は pausedTotal に加算
+          pausedTotal[genre] += prevPausedRange[genre].end - prevPausedRange[genre].start;
+
+          // 初期化
+          prevPausedRange[genre].start = 0;
+          prevPausedRange[genre].end   = 0;
+        }
+
+        // 音声の再生位置を計算
+        currentTime[genre] = audiocontext.currentTime - pausedTotal[genre];
+
+        if (currentTime[genre] > SPRITE_TIMES[genre]) {
+          // ループして先頭に戻った際の補正
+          currentTime[genre] -= SPRITE_TIMES[genre];
+          pausedTotal[genre] += SPRITE_TIMES[genre];
+
+          // 音声がループしたときに映像も強制的に先頭に戻す
+          setCurrentTime(currentTime[genre], genre);
+        }
+
+        // 音声と映像をゆるく同期
+        looseSync(currentTime[genre], genre);
+      } else {
+        // pause 中は prevPausedRange の end 側を更新し続ける
+        prevPausedRange[genre].end = audiocontext.currentTime;
+      }
     }
   });
 
