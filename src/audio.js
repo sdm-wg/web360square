@@ -35,7 +35,7 @@ const spriteTimes = {
     { start: 704,  end: 704 + SPRITE_TIMES.concert }   // Cemb
   ],
   jazz: [
-    { start: 784, end: 784 + SPRITE_TIMES.jazz },  // Keyboard
+    { start: 392, end: 392 + SPRITE_TIMES.jazz },  // Keyboard
     { start: 0,   end: SPRITE_TIMES.jazz },        // Bass
     { start: 196, end: 196 + SPRITE_TIMES.jazz }   // Drums
   ]
