@@ -1,5 +1,9 @@
 # Web360Square
 
+:warning: UNMAINTAINED
+
+**Check [sdm-wg/web360square-vue](https://github.com/sdm-wg/web360square-vue) for a newer repository.**
+
 ## Setup
 
 ### 1. nodebrew のインストール
